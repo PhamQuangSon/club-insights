@@ -93,9 +93,12 @@ function CoverageBar({ coverage }: { coverage: Coverage }) {
   return (
     <span className="flex flex-col gap-1.5">
       <span className="flex items-center justify-between gap-2 text-xs">
-        <span className="font-bold uppercase tracking-wide text-muted-foreground">Attendance taken</span>
-        <span className="rounded-full bg-count px-2 py-0.5 font-semibold tabular-nums text-count-foreground">
-          {coverage.recorded}/{coverage.held} sessions
+        <span className="min-w-0 font-bold uppercase tracking-wide text-muted-foreground">Sessions with attendance</span>
+        <span
+          aria-label={`${coverage.recorded} of ${coverage.held} sessions`}
+          className="shrink-0 whitespace-nowrap rounded-full bg-count px-2 py-0.5 font-semibold tabular-nums text-count-foreground"
+        >
+          {coverage.recorded}/{coverage.held}
         </span>
       </span>
       <span

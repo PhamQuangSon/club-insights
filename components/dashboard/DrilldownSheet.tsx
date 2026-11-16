@@ -85,7 +85,7 @@ export function DrilldownSheet({ clubId, timeZone, range, metric, summary, onClo
                 </Dialog.Description>
                 {metric === "noShows" && coverage && coverage.held > 0 && (
                   <p className="mt-2 inline-flex items-center gap-2 text-xs">
-                    <span className="rounded-full bg-count px-2 py-0.5 font-semibold tabular-nums text-count-foreground">
+                    <span className="whitespace-nowrap rounded-full bg-count px-2 py-0.5 font-semibold tabular-nums text-count-foreground">
                       {coverage.recorded}/{coverage.held} sessions
                     </span>
                     <span className="text-muted-foreground">had attendance taken</span>
@@ -148,7 +148,7 @@ function Tag({ tone, children }: { tone: "selected" | "neutral" | "count"; child
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums",
+        "inline-flex items-center whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums",
         tone === "selected" && "bg-selected text-selected-foreground",
         tone === "neutral" && "border border-dashed border-pill-inactive bg-neutral-tag text-muted-foreground",
         tone === "count" && "bg-count text-count-foreground",

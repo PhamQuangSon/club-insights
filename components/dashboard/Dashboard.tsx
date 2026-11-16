@@ -1,38 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { cn } from "@/lib/utils";
 import { describeZone } from "@/lib/format";
-import type { ClubsResponse, MetricKey, SummaryResponse, WeeklyResponse } from "@/lib/types";
+import { defaultRange, type DateRange } from "@/lib/time";
+import type { Club, ClubsResponse, MetricKey, SummaryResponse, WeeklyResponse } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClubHeader } from "./ClubHeader";
 import { ClubSwitcher } from "./ClubSwitcher";
 import { DrilldownSheet } from "./DrilldownSheet";
+import { EmptyRange, NewClubEmpty } from "./EmptyStates";
 import { MetricCards, MetricCardsSkeleton } from "./MetricCards";
 import { RangePicker } from "./RangePicker";
-import { WeeklyChart, WeeklyChartSkeleton } from "./WeeklyChart";
 import { useDashboardUrl } from "./use-dashboard-url";
+import { WeeklyChart, WeeklyChartSkeleton } from "./WeeklyChart";
 
 export function Dashboard() {
   const clubsQuery = useSWR<ClubsResponse>("/api/clubs", fetcher);
-  const { club, range, setClub, setRange } = useDashboardUrl(clubsQuery.data?.clubs, clubsQuery.data?.now);
+  const clubs = clubsQuery.data?.clubs;
   const now = clubsQuery.data?.now;
-  const [openMetric, setOpenMetric] = useState<MetricKey | null>(null);
+  const { club, range, setClub, setRange } = useDashboardUrl(clubs, now);
 
-  const query = club && range ? `?from=${range.from}&to=${range.to}` : null;
-  const summaryQuery = useSWR<SummaryResponse>(
-    club?.hasData && query ? `/api/clubs/${club.id}/summary${query}` : null,
-    fetcher,
-    { keepPreviousData: true },
-  );
-  const weeklyQuery = useSWR<WeeklyResponse>(
-    club?.hasData && query ? `/api/clubs/${club.id}/weekly${query}&metric=activePlayers` : null,
-    fetcher,
-    { keepPreviousData: true },
-  );
+  useEffect(() => {
+    document.title = club ? `${club.name} · Club Insights` : "Club Insights";
+  }, [club]);
 
   return (
     <div className="min-h-screen">
@@ -40,68 +34,99 @@ export function Dashboard() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 md:px-8">
           <p className="shrink-0 text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">Club Insights</p>
-          {clubsQuery.data && club && (
-            <ClubSwitcher clubs={clubsQuery.data.clubs} value={club.id} onChange={setClub} />
-          )}
+          {clubs && club && <ClubSwitcher clubs={clubs} value={club.id} onChange={setClub} />}
         </div>
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 md:px-8 md:py-8">
         {clubsQuery.error ? (
           <ErrorBanner message={`Couldn't load clubs. ${clubsQuery.error.message}`} onRetry={() => clubsQuery.mutate()} />
-        ) : !club || !now || !range ? (
+        ) : !clubs || !club || !now || !range ? (
           <DashboardSkeleton />
         ) : (
           <>
             <ClubHeader club={club} nowIso={now} />
-            <RangePicker club={club} range={range} nowIso={now} onChange={setRange} />
-            {summaryQuery.error ? (
-              <ErrorBanner
-                message={`Couldn't load the numbers. ${summaryQuery.error.message}`}
-                onRetry={() => summaryQuery.mutate()}
-              />
-            ) : !summaryQuery.data ? (
-              <MetricCardsSkeleton />
+            {club.hasData ? (
+              <ClubInsights club={club} range={range} nowIso={now} onRangeChange={setRange} />
             ) : (
-              // While a new range loads, keep the previous numbers dimmed instead of jumping the layout.
-              <div
-                className={cn(
-                  "transition-opacity",
-                  (summaryQuery.data.range.from !== range.from || summaryQuery.data.range.to !== range.to) && "opacity-50",
-                )}
-              >
-                <MetricCards summary={summaryQuery.data} onOpen={setOpenMetric} />
-              </div>
-            )}
-            {weeklyQuery.error ? (
-              <ErrorBanner
-                message={`Couldn't load the weekly chart. ${weeklyQuery.error.message}`}
-                onRetry={() => weeklyQuery.mutate()}
+              <NewClubEmpty
+                club={club}
+                nowIso={now}
+                example={clubs.find((c) => c.hasData)}
+                onSeeExample={setClub}
               />
-            ) : !weeklyQuery.data ? (
-              <WeeklyChartSkeleton />
-            ) : (
-              <div
-                className={cn(
-                  "transition-opacity",
-                  (weeklyQuery.data.range.from !== range.from || weeklyQuery.data.range.to !== range.to) && "opacity-50",
-                )}
-              >
-                <WeeklyChart weekly={weeklyQuery.data} zoneCity={describeZone(club.timeZone, now).city} />
-              </div>
             )}
-            <DrilldownSheet
-              clubId={club.id}
-              timeZone={club.timeZone}
-              range={range}
-              metric={openMetric}
-              summary={summaryQuery.data}
-              onClose={() => setOpenMetric(null)}
-            />
           </>
         )}
       </main>
     </div>
+  );
+}
+
+function ClubInsights({
+  club,
+  range,
+  nowIso,
+  onRangeChange,
+}: {
+  club: Club;
+  range: DateRange;
+  nowIso: string;
+  onRangeChange: (range: DateRange) => void;
+}) {
+  const [openMetric, setOpenMetric] = useState<MetricKey | null>(null);
+  const query = `?from=${range.from}&to=${range.to}`;
+  const summaryQuery = useSWR<SummaryResponse>(`/api/clubs/${club.id}/summary${query}`, fetcher, {
+    keepPreviousData: true,
+  });
+  const weeklyQuery = useSWR<WeeklyResponse>(`/api/clubs/${club.id}/weekly${query}&metric=activePlayers`, fetcher, {
+    keepPreviousData: true,
+  });
+
+  // While a new range loads, keep the previous numbers dimmed instead of jumping the layout.
+  const stale = (r?: DateRange) => r !== undefined && (r.from !== range.from || r.to !== range.to);
+  const summary = summaryQuery.data;
+  const nothingHeld = summary !== undefined && !stale(summary.range) && summary.metrics.sessionsHeld.current === 0;
+
+  return (
+    <>
+      <RangePicker club={club} range={range} nowIso={nowIso} onChange={onRangeChange} />
+
+      {summaryQuery.error ? (
+        <ErrorBanner message={`Couldn't load the numbers. ${summaryQuery.error.message}`} onRetry={() => summaryQuery.mutate()} />
+      ) : !summary ? (
+        <MetricCardsSkeleton />
+      ) : nothingHeld ? (
+        <EmptyRange club={club} range={range} onReset={() => onRangeChange(defaultRange(nowIso, club.timeZone))} />
+      ) : (
+        <div className={cn("transition-opacity", stale(summary.range) && "opacity-50")}>
+          <MetricCards summary={summary} onOpen={setOpenMetric} />
+        </div>
+      )}
+
+      {!nothingHeld &&
+        (weeklyQuery.error ? (
+          <ErrorBanner
+            message={`Couldn't load the weekly chart. ${weeklyQuery.error.message}`}
+            onRetry={() => weeklyQuery.mutate()}
+          />
+        ) : !weeklyQuery.data ? (
+          <WeeklyChartSkeleton />
+        ) : (
+          <div className={cn("transition-opacity", stale(weeklyQuery.data.range) && "opacity-50")}>
+            <WeeklyChart weekly={weeklyQuery.data} zoneCity={describeZone(club.timeZone, nowIso).city} />
+          </div>
+        ))}
+
+      <DrilldownSheet
+        clubId={club.id}
+        timeZone={club.timeZone}
+        range={range}
+        metric={openMetric}
+        summary={summary}
+        onClose={() => setOpenMetric(null)}
+      />
+    </>
   );
 }
 
@@ -116,12 +141,8 @@ export function DashboardSkeleton() {
         </div>
       </div>
       <Skeleton className="h-10 w-full max-w-xl rounded-full" />
-      <div className="grid gap-4 md:grid-cols-3">
-        {[0, 1, 2].map((i) => (
-          <Skeleton key={i} className="h-56 rounded-xl" />
-        ))}
-      </div>
-      <Skeleton className="h-[380px] rounded-xl" />
+      <MetricCardsSkeleton />
+      <WeeklyChartSkeleton />
     </div>
   );
 }
