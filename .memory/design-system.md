@@ -81,7 +81,7 @@ Tailwind: `fontFamily.sans = ['var(--font-inter)', 'system-ui', 'sans-serif']` (
 | Vai trò | Style | Ví dụ |
 |---|---|---|
 | Eyebrow / label card / section | 12px, **weight 700, UPPERCASE**, `tracking-wide`, `muted-foreground` | `ACTIVE PLAYERS` |
-| Số KPI | 40px desktop / 32px mobile, **weight 800**, `tabular-nums`, `tracking-tight` | `142` |
+| Số KPI | 40px desktop / 32px mobile, **weight 800**, proportional figures (không `tabular-nums` ở cỡ lớn), `tracking-tight` | `142` |
 | Delta | 13–14px, weight 600, `tabular-nums` | `▲ 12 · +9.2%` |
 | Định nghĩa | 13–14px, weight 400, `muted-foreground`, **luôn hiện** | |
 | Tên club (header) | 22–28px, weight 800 | `Saigon Smash Pickleball` |
@@ -181,7 +181,7 @@ Tailwind: `fontFamily.sans = ['var(--font-inter)', 'system-ui', 'sans-serif']` (
 - [ ] Chỉ dùng token trong §2, không hardcode hex trong component.
 - [ ] **Xanh lá = đang chọn/xác nhận, xanh dương = điều hướng/hành động, vàng = số đếm x/y** (đúng §1).
 - [ ] Chữ trắng chỉ đặt trên `primary` hoặc `negative`. Nền xanh lá và vàng luôn đi với chữ đen.
-- [ ] Mọi con số đều `tabular-nums`, đếm dạng x/y khi có mẫu số.
+- [ ] Số trong cột/bảng/badge dùng `tabular-nums` (số KPI lớn thì không), đếm dạng x/y khi có mẫu số.
 - [ ] Delta có mũi tên và chữ, màu đúng theo bảng ở §4.
 - [ ] Định nghĩa nằm ngay dưới số, không nằm trong tooltip.
 - [ ] Eyebrow HOA chỉ dùng cho label nhỏ. Ngày giờ theo format `Mon, Jul 13 @5:30 AM` hoặc `13 Jul – 4 Oct 2026`, theo giờ club.

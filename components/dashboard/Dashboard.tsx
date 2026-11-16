@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import type { ClubsResponse } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import type { ClubsResponse, MetricKey, SummaryResponse } from "@/lib/types";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClubHeader } from "./ClubHeader";
 import { ClubSwitcher } from "./ClubSwitcher";
+import { MetricCards, MetricCardsSkeleton } from "./MetricCards";
 import { RangePicker } from "./RangePicker";
 import { useDashboardUrl } from "./use-dashboard-url";
 
@@ -14,6 +17,14 @@ export function Dashboard() {
   const clubsQuery = useSWR<ClubsResponse>("/api/clubs", fetcher);
   const { club, range, setClub, setRange } = useDashboardUrl(clubsQuery.data?.clubs, clubsQuery.data?.now);
   const now = clubsQuery.data?.now;
+  const [openMetric, setOpenMetric] = useState<MetricKey | null>(null);
+
+  const query = club && range ? `?from=${range.from}&to=${range.to}` : null;
+  const summaryQuery = useSWR<SummaryResponse>(
+    club?.hasData && query ? `/api/clubs/${club.id}/summary${query}` : null,
+    fetcher,
+    { keepPreviousData: true },
+  );
 
   return (
     <div className="min-h-screen">
@@ -36,6 +47,25 @@ export function Dashboard() {
           <>
             <ClubHeader club={club} nowIso={now} />
             <RangePicker club={club} range={range} nowIso={now} onChange={setRange} />
+            {summaryQuery.error ? (
+              <ErrorBanner
+                message={`Couldn't load the numbers. ${summaryQuery.error.message}`}
+                onRetry={() => summaryQuery.mutate()}
+              />
+            ) : !summaryQuery.data ? (
+              <MetricCardsSkeleton />
+            ) : (
+              // While a new range loads, keep the previous numbers dimmed instead of jumping the layout.
+              <div
+                className={cn(
+                  "transition-opacity",
+                  (summaryQuery.data.range.from !== range.from || summaryQuery.data.range.to !== range.to) && "opacity-50",
+                )}
+              >
+                <MetricCards summary={summaryQuery.data} onOpen={setOpenMetric} />
+              </div>
+            )}
+            {openMetric && <p className="sr-only">Selected {openMetric}</p>}
           </>
         )}
       </main>

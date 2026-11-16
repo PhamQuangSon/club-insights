@@ -101,4 +101,5 @@ bookings.csv booking_id,session_id,player_id,booked_at,status,cancelled_at,atten
 | D8 | Summary và drill-down dùng chung một hàm WHERE | Số trên card luôn khớp số dòng trong drill-down |
 | D9 | "Held" có thêm điều kiện `starts_at <= now` | Chặn trường hợp host chọn range nằm trong tương lai |
 | D11 | Chart tuần: tuần so sánh = cùng tuần lùi lại đúng độ dài kỳ (range theo tuần → đúng tuần Mon–Sun tương ứng). Tuần không có session có điểm danh → no-shows null | Không so sánh lệch tuần |
+| D12 | Card no-shows: hiện rate (no-shows / booking có dấu điểm danh) cạnh số đếm; nếu tỷ lệ session có điểm danh giữa 2 kỳ lệch ≥15 điểm % thì cảnh báo "so sánh rate, đừng so số đếm" | Số đếm tăng có thể chỉ vì điểm danh nhiều hơn |
 | D10 | Club không có data → empty state riêng, nêu ngày tạo club và mô tả những gì sẽ hiện khi có session | Đề yêu cầu "useful page" |
