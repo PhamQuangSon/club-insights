@@ -4,7 +4,7 @@
 
 ## Trạng thái hiện tại
 
-- **Phase hiện tại:** 👉 Phase 8 (DateRangePicker + presets)
+- **Phase hiện tại:** 👉 Phase 9 (MetricCards)
 - **Cập nhật lần cuối:** 2026-11-16
 - **Đã có:** đề PDF, `data-csv/` (4 CSV), các file phân tích cũ (`phan-tich.md`, `ke-hoach-phase.md`, có chỗ đã lỗi thời so với data thật), `.claude/CLAUDE.md`, `.memory/`.
 - **Blockers:** chưa có.
@@ -49,8 +49,8 @@
   - **DoD:** `curl` thử 4 endpoint, kèm 1 case 400 và 1 case 404. ✅ (2026-11-16: 200 ×6, 400 ×6 kiểu lỗi, 404)
 
 - [x] **Phase 7: App shell + ClubSwitcher** (URL state `?club&from&to`) (2026-11-16: đổi club giữ range, 375px không tràn)
-- [ ] 👉 **Phase 8: DateRangePicker + presets** (Last 4w / 12w / All / Custom, hiển thị cả range của kỳ trước)
-- [ ] **Phase 9: MetricCards** (định nghĩa luôn hiện, delta tô màu theo ngữ nghĩa, coverage của no-shows). **Phase cần review UI kỹ nhất.**
+- [x] **Phase 8: DateRangePicker + presets** (Last 4w / 12w / All / Custom, hiển thị cả range của kỳ trước) (2026-11-16)
+- [ ] 👉 **Phase 9: MetricCards** (định nghĩa luôn hiện, delta tô màu theo ngữ nghĩa, coverage của no-shows). **Phase cần review UI kỹ nhất.**
 - [ ] **Phase 10: WeeklyChart** (active players, so sánh với kỳ trước, đánh dấu tuần partial, tooltip theo giờ HCM)
 - [ ] **Phase 11: DrilldownSheet** (số dòng bằng số trên card, bảng riêng cho từng metric, badge attendance)
 - [ ] **Phase 12: Empty states + polish** (club-002, range rỗng, Retry khi lỗi, responsive 375/768/1280)
@@ -70,3 +70,4 @@
 | 2026-11-16 | 5 | WHERE dùng chung (HELD/CONFIRMED/MARKED/NO_SHOW). Weekly GROUP BY `week_start_local`, tuần so sánh = lùi đúng độ dài kỳ. Số kiểm tra: mặc định 180 players / 60 sessions / 40 no-shows (33/60 có điểm danh); tuần Tết 16/02 no-shows = null. |
 | 2026-11-16 | 6 | `from`/`to` không bắt buộc (mặc định 12 tuần), tối đa 731 ngày. `/api/clubs` trả thêm `now`. Sửa lỗi: zod 4 vẫn chạy object refine khi field lỗi → guard bằng `bothValid`. |
 | 2026-11-16 | 7 | Header + ClubSwitcher (native select cho mobile/a11y), `useDashboardUrl`, `lib/format.ts`, `lib/fetcher.ts`. QA bằng puppeteer-core trong `.qa/` (gitignored) vì Chrome headless CLI có width tối thiểu 500px. |
+| 2026-11-16 | 8 | Preset pill (chọn = xanh lá), Custom = Radix Popover + react-day-picker (Mon đầu tuần, khoá ngày tương lai, 1 tháng trên mobile). Dòng phụ luôn hiện range kỳ trước + cảnh báo khi range không trọn tuần. CSS của day-picker cần selector `.rdp-root.club-calendar` để đè style mặc định. |

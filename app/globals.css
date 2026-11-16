@@ -49,3 +49,22 @@
     @apply bg-background text-foreground antialiased;
   }
 }
+
+/* Date picker: selected days use the "selected" green with dark text. */
+.rdp-root.club-calendar {
+  --rdp-accent-color: hsl(var(--selected));
+  --rdp-accent-background-color: hsl(var(--positive-bg));
+  --rdp-range_start-color: hsl(var(--selected-foreground));
+  --rdp-range_end-color: hsl(var(--selected-foreground));
+  --rdp-today-color: hsl(var(--primary));
+  --rdp-day-height: 38px;
+  --rdp-day-width: 38px;
+  --rdp-months-gap: 1.5rem;
+  font-size: 0.875rem;
+}
+.rdp-root.club-calendar .rdp-chevron {
+  fill: hsl(var(--primary));
+}
+.rdp-root.club-calendar .rdp-caption_label {
+  font-weight: 700;
+}

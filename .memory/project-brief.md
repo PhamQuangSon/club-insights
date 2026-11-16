@@ -92,7 +92,7 @@ bookings.csv booking_id,session_id,player_id,booked_at,status,cancelled_at,atten
 | # | Quyết định | Lý do |
 |---|---|---|
 | D1 | Default range = **12 tuần đầy đủ gần nhất trước now**: 2026-07-13 → 2026-10-04. Kỳ trước: 2026-04-20 → 2026-07-12 | Now là Thứ Hai nên tuần đang chạy chưa có gì. Data kéo đến 04/10 nên default không bị trống |
-| D2 | Preset: Last 4 weeks / Last 12 weeks / All data / Custom. Preset theo tuần luôn tính trọn tuần Mon–Sun | So sánh giữa các tuần mới công bằng |
+| D2 | Preset: Last 4 weeks / Last 12 weeks / All time / Custom (calendar khoá ngày tương lai). Preset theo tuần luôn tính trọn tuần Mon–Sun | So sánh giữa các tuần mới công bằng |
 | D3 | Active players đếm theo booking, không theo attendance | Chỉ 104/195 session có ghi điểm danh |
 | D4 | No-shows chỉ tính ở session có ghi điểm danh, kèm coverage và rate | Unknown ≠ 0 |
 | D5 | Chart hiển thị active players theo tuần | Trả lời trực tiếp câu hỏi "có nhiều người chơi hơn không?" |

@@ -7,11 +7,12 @@ import { ErrorBanner } from "@/components/ui/error-banner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClubHeader } from "./ClubHeader";
 import { ClubSwitcher } from "./ClubSwitcher";
+import { RangePicker } from "./RangePicker";
 import { useDashboardUrl } from "./use-dashboard-url";
 
 export function Dashboard() {
   const clubsQuery = useSWR<ClubsResponse>("/api/clubs", fetcher);
-  const { club, range, setClub } = useDashboardUrl(clubsQuery.data?.clubs, clubsQuery.data?.now);
+  const { club, range, setClub, setRange } = useDashboardUrl(clubsQuery.data?.clubs, clubsQuery.data?.now);
   const now = clubsQuery.data?.now;
 
   return (
@@ -34,9 +35,7 @@ export function Dashboard() {
         ) : (
           <>
             <ClubHeader club={club} nowIso={now} />
-            <p className="text-sm text-muted-foreground">
-              Range {range.from} → {range.to}
-            </p>
+            <RangePicker club={club} range={range} nowIso={now} onChange={setRange} />
           </>
         )}
       </main>
