@@ -4,9 +4,9 @@
 
 ## Trạng thái hiện tại
 
-- **Phase hiện tại:** 👉 Phase 13 (README + final QA)
+- **Phase hiện tại:** ✅ Xong toàn bộ 13 phase. Còn lại: push lên GitHub (user tự quyết).
 - **Cập nhật lần cuối:** 2026-11-16
-- **Đã có:** đề PDF, `data-csv/` (4 CSV), các file phân tích cũ (`phan-tich.md`, `ke-hoach-phase.md`, có chỗ đã lỗi thời so với data thật), `.claude/CLAUDE.md`, `.memory/`.
+- **Đã có:** app hoàn chỉnh + README. File local không commit: đề PDF, `phan-tich.md`, `ke-hoach-phase.md`, `.qa/` (công cụ screenshot).
 - **Blockers:** chưa có.
 
 ## Các phase
@@ -54,7 +54,7 @@
 - [x] **Phase 10: WeeklyChart** (active players, so sánh với kỳ trước, đánh dấu tuần partial, tooltip theo giờ HCM) (2026-11-16)
 - [x] **Phase 11: DrilldownSheet** (số dòng bằng số trên card, bảng riêng cho từng metric, badge attendance) (2026-11-16: 180/60/40 khớp card; Enter mở, Esc đóng, focus trả về card)
 - [x] **Phase 12: Empty states + polish** (club-002, range rỗng, Retry khi lỗi, responsive 375/768/1280) (2026-11-16)
-- [ ] 👉 **Phase 13: README + final QA** (clone sạch → install → dev chạy được, test pass, tsc sạch)
+- [x] **Phase 13: README + final QA** (clone sạch → install → dev chạy được, test pass, tsc sạch) (2026-11-16: clone sạch → tsc sạch, 54/54 test, build OK, `start` trả đúng 180/60/40, `dev` từ DB trống tự seed)
 
 ## Nhật ký
 
@@ -75,3 +75,4 @@
 | 2026-11-16 | 10 | Grouped bar (kỳ trước nhạt bên trái), màu đọc từ CSS token. `chart-previous` đổi #C2C3FE → #A5A7FE (validator: light-end phải ≥2:1). Tuần partial = sọc 45° (không làm mờ, vì mờ trông giống màu kỳ trước). Sửa bug: range lệch tuần thì kỳ trước của mỗi tuần = cùng các ngày đó lùi đúng độ dài kỳ (`WeeklyPoint.previous: DateRange`). Có "Show as table". QA: fullPage của puppeteer làm ResponsiveContainer đo lại → đổi sang tăng viewport; dev mode cần ~6s để hydrate lần đầu. |
 | 2026-11-16 | 11 | Radix Dialog làm sheet phải (full width mobile). Players: tìm theo tên + sort Most sessions / **Most no-shows** / A–Z (trả lời "ai không đến"). Sessions: giờ theo HCM, tag Recorded / Not recorded, badge booked/places. No-shows unknown → giải thích thay vì danh sách rỗng. Mở theo kiểu controlled nên tự trả focus về card khi đóng. |
 | 2026-11-16 | 12 | Club mới: giải thích 3 metric sẽ có + tip "take attendance at every session" + nút xem club mẫu. Range không có session → EmptyRange + nút về 12 tuần. Favicon SVG tự vẽ, `document.title` theo club. Dashboard tách `ClubInsights`. Badge coverage rút thành "33/60" (nhãn "Sessions with attendance") để không tràn ở 768px. |
+| 2026-11-16 | 13 | README (cách chạy, định nghĩa, 11 quyết định, API, test, data notes, next steps). Bỏ script `lint` (chưa có ESLint). QA trên clone sạch trong `.qa/clean`. |

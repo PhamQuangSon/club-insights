@@ -57,4 +57,4 @@ INDEX bookings(session_id); bookings(player_id)
 
 ## Scripts trong package.json
 
-`dev` (có `predev` chạy `node scripts/ensure-seed.mjs`), `build`, `start`, `test`, `lint`, `seed`, `typecheck`.
+`dev` (có `predev` chạy `node scripts/ensure-seed.mjs`), `build` (có `prebuild` seed), `start`, `test`, `test:watch`, `seed`, `typecheck`. Không có `lint` (chưa cài ESLint, ghi ở Next steps).
