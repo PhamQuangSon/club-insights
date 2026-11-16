@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Surfaces */
+    --background: 218 100% 98%;
+    --foreground: 221 39% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 221 39% 11%;
+    --muted: 221 100% 96%;
+    --muted-foreground: 215 14% 34%;
+    --border: 222 44% 92%;
+    --input: 222 44% 92%;
+    --radius: 0.75rem;
+
+    /* Brand */
+    --primary: 239 98% 60%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 239 98% 60%;
+    --selected: 145 68% 53%;
+    --selected-foreground: 221 39% 11%;
+    --count: 43 99% 54%;
+    --count-foreground: 221 39% 11%;
+    --neutral-tag: 0 0% 94%;
+    --pill-inactive: 240 1% 85%;
+
+    /* Semantic: ink for text, tint for backgrounds */
+    --positive: 142 72% 29%;
+    --positive-bg: 148 59% 91%;
+    --negative: 4 76% 40%;
+    --negative-bg: 16 85% 95%;
+    --warning: 39 100% 27%;
+    --warning-bg: 44 88% 93%;
+    --destructive: 4 76% 40%;
+
+    /* Chart */
+    --chart-current: 239 98% 60%;
+    --chart-previous: 239 97% 88%;
+    --chart-partial: 43 99% 54%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}

@@ -1,0 +1,66 @@
+# Progress
+
+> Cập nhật file này sau mỗi phase: đánh `[x]`, ghi ngày và các ghi chú hoặc quyết định mới. Phase đang làm đánh dấu 👉.
+
+## Trạng thái hiện tại
+
+- **Phase hiện tại:** 👉 Phase 2 (time utilities)
+- **Cập nhật lần cuối:** 2026-11-16
+- **Đã có:** đề PDF, `data-csv/` (4 CSV), các file phân tích cũ (`phan-tich.md`, `ke-hoach-phase.md`, có chỗ đã lỗi thời so với data thật), `.claude/CLAUDE.md`, `.memory/`.
+- **Blockers:** chưa có.
+
+## Các phase
+
+- [x] **Phase 0: Phân tích & setup bộ nhớ** (2026-11-16)
+  - Xây dựng design system → `.memory/design-system.md` (token, typography, component pattern, checklist consistency).
+  - Đối chiếu dữ liệu thật với các file phân tích cũ, phát hiện 6 chỗ sai (xem `project-brief.md` §4). Tạo `.claude/CLAUDE.md` và `.memory/`.
+
+- [x] **Phase 1: Scaffold** (2026-11-16)
+  - Next.js + TS strict + Tailwind + shadcn/ui + Recharts + SWR + better-sqlite3 + papaparse + luxon + zod + vitest + tsx.
+  - `.gitignore` (gồm `db/*.db*`, `.DS_Store`). Path alias `@/*`.
+  - Inter qua `next/font`, token trong `globals.css` theo `design-system.md` §2, màu `brand-*` trong Tailwind config.
+  - **DoD:** `npm install && npm run dev` mở được trang. `npm test` chạy được. `npx tsc --noEmit` sạch. ✅ (dev → HTTP 200, 1 smoke test pass, tsc sạch)
+
+- [ ] 👉 **Phase 2: `lib/time.ts` + `lib/types.ts` + test (TDD)**
+  - `NOW_ISO`, `getWeekStart(utcIso, tz)`, `toLocalDate`, `rangeToUtcBounds(from, to, tz)`, `previousRange(from, to)`, `defaultRange(nowIso, tz)`, `presetRange(...)`.
+  - **DoD (test bắt buộc):**
+    - `getWeekStart('2026-01-04T22:30:00Z', HCM) === '2026-01-05'` (session Early Bird thật, s0001)
+    - `getWeekStart('2026-01-04T16:59:59Z', HCM) === '2025-12-29'`, `getWeekStart('2026-01-04T17:00:00Z', HCM) === '2026-01-05'`
+    - `rangeToUtcBounds('2026-01-05','2026-01-11', HCM)` → `start '2026-01-04T17:00:00.000Z'`, `end '2026-01-11T17:00:00.000Z'`
+    - `previousRange('2026-07-13','2026-10-04')` → `{ from: '2026-04-20', to: '2026-07-12' }`
+    - `defaultRange(NOW_ISO, HCM)` → `{ from: '2026-07-13', to: '2026-10-04' }`
+
+- [ ] **Phase 3: DB schema + seed**
+  - Tính `week_start_local` và `date_local` bằng hàm của Phase 2, theo `time_zone` của từng club. `attended` rỗng → NULL. Idempotent, có `--force`. `ensure-seed.mjs` dùng cho `predev`.
+  - **DoD:** log ra 2 clubs / 260 players / 195 sessions / 1893 bookings.
+    - `SELECT COUNT(*) FROM bookings WHERE attended IS NULL` = **894** (734 booked + 160 cancelled)
+    - `SELECT COUNT(*) FROM sessions WHERE attendance_recorded=1` = **104**
+    - Mọi `week_start_local` đều là Thứ Hai. Có đúng 39 tuần có session scheduled.
+
+- [ ] **Phase 4: `lib/metrics.ts` (hàm thuần) + test**: đây là test chính "con số dễ sai nhất"
+  - Fixture: A (đã ghi điểm danh, T/F/F → 2 no-show), B (`attendance_recorded=false`, attended null → không tính, không phải 0), C (có 1 booking cancelled → không phải no-show), D (session cancelled → bị loại hoàn toàn), E (session Early Bird CN 22:30 UTC → thuộc tuần sau).
+  - **DoD:** test pass, có case "coverage = 0 → noShows null".
+
+- [ ] **Phase 5: `lib/queries.ts` (SQL, WHERE dùng chung) + test integration**
+  - `getSummary`, `getWeeklySeries`, `getDrilldown`, `getClubs`.
+  - **DoD:** test vitest chạy trên DB đã seed, assert `summary.X.current === drilldown(X).total` cho cả 3 metric với range mặc định và range all-data. Đối chiếu số với kết quả tính bằng Python/CSV.
+
+- [ ] **Phase 6: API routes** (zod, 400/404, force-dynamic, contract đúng như `rules.md` §14)
+  - **DoD:** `curl` thử 4 endpoint, kèm 1 case 400 và 1 case 404.
+
+- [ ] **Phase 7: App shell + ClubSwitcher** (URL state `?club&from&to`)
+- [ ] **Phase 8: DateRangePicker + presets** (Last 4w / 12w / All / Custom, hiển thị cả range của kỳ trước)
+- [ ] **Phase 9: MetricCards** (định nghĩa luôn hiện, delta tô màu theo ngữ nghĩa, coverage của no-shows). **Phase cần review UI kỹ nhất.**
+- [ ] **Phase 10: WeeklyChart** (active players, so sánh với kỳ trước, đánh dấu tuần partial, tooltip theo giờ HCM)
+- [ ] **Phase 11: DrilldownSheet** (số dòng bằng số trên card, bảng riêng cho từng metric, badge attendance)
+- [ ] **Phase 12: Empty states + polish** (club-002, range rỗng, Retry khi lỗi, responsive 375/768/1280)
+- [ ] **Phase 13: README + final QA** (clone sạch → install → dev chạy được, test pass, tsc sạch)
+
+## Nhật ký
+
+| Ngày | Phase | Ghi chú |
+|---|---|---|
+| 2026-11-16 | 0 | Đã phân tích đề và dữ liệu, tạo bộ nhớ dự án. |
+| 2026-11-16 | 0 | Chốt design system: Inter, primary `#3336FD`, nền `#F4F8FF`, xanh lá = đang chọn, vàng = badge x/y. |
+| 2026-11-16 | 0 | Repo public → xoá mọi nhắc tới tên công ty, gitignore PDF đề bài. |
+| 2026-11-16 | 1 | Scaffold: Next 15.5, TS 5.9, Tailwind 3.4 + token, Radix, vitest. Hạ TS 7 → 5 vì Next chưa hỗ trợ. |

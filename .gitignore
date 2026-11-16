@@ -1,0 +1,23 @@
+# deps / build
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# local database
+db/*.db
+db/*.db-*
+*.sqlite
+*.sqlite-*
+
+# brief & local notes (not for the public repo)
+*.pdf
+phan-tich.md
+ke-hoach-phase.md
+
+# env / os
+.env*
+.DS_Store
+.vercel
