@@ -19,7 +19,8 @@
 12. Response luôn có `definition` cho từng metric và `coverage` cho no-shows. Mobile app phải dùng được API mà không cần chép lại logic.
 13. Route handler đặt `export const dynamic = 'force-dynamic'`.
 14. Endpoint và response shape cố định:
-    - `GET /api/clubs` → `{ clubs: { id, name, timeZone, createdAt, hasData, firstSessionDate, lastSessionDate }[] }`
+    - `GET /api/clubs` → `{ clubs: { id, name, timeZone, createdAt, hasData, firstSessionDate, lastSessionDate }[], now }`
+    - `from`/`to` không bắt buộc (thiếu cả hai → 12 tuần đầy đủ gần nhất), tối đa 731 ngày. Mã lỗi: `invalid_range`, `invalid_metric` (400), `club_not_found` (404).
     - `GET /api/clubs/:id/summary?from&to` → `{ range, previousRange, metrics: { activePlayers, sessionsHeld, noShows } }`. Mỗi metric có dạng `{ current, previous, delta, deltaPct, definition }`. Riêng noShows có thêm `coverage: { current: {recorded, held, bookingsRecorded}, previous }` và `rate`.
     - `GET /api/clubs/:id/weekly?from&to&metric` → `{ weeks: { weekStart, weekEnd, value, previousValue, partial }[] }`
     - `GET /api/clubs/:id/drilldown?from&to&metric` → `{ metric, total, definition, rows: [...] }`

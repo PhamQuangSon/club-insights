@@ -4,7 +4,7 @@
 
 ## Trạng thái hiện tại
 
-- **Phase hiện tại:** 👉 Phase 6 (API routes)
+- **Phase hiện tại:** 👉 Phase 7 (App shell + ClubSwitcher)
 - **Cập nhật lần cuối:** 2026-11-16
 - **Đã có:** đề PDF, `data-csv/` (4 CSV), các file phân tích cũ (`phan-tich.md`, `ke-hoach-phase.md`, có chỗ đã lỗi thời so với data thật), `.claude/CLAUDE.md`, `.memory/`.
 - **Blockers:** chưa có.
@@ -45,10 +45,10 @@
   - `getSummary`, `getWeeklySeries`, `getDrilldown`, `getClubs`.
   - **DoD:** test vitest chạy trên DB đã seed, assert `summary.X.current === drilldown(X).total` cho cả 3 metric với range mặc định và range all-data. Đối chiếu số với kết quả tính bằng Python/CSV. ✅ (2026-11-16, 18 test integration, tổng 49)
 
-- [ ] 👉 **Phase 6: API routes** (zod, 400/404, force-dynamic, contract đúng như `rules.md` §14)
-  - **DoD:** `curl` thử 4 endpoint, kèm 1 case 400 và 1 case 404.
+- [x] **Phase 6: API routes** (zod, 400/404, force-dynamic, contract đúng như `rules.md` §14)
+  - **DoD:** `curl` thử 4 endpoint, kèm 1 case 400 và 1 case 404. ✅ (2026-11-16: 200 ×6, 400 ×6 kiểu lỗi, 404)
 
-- [ ] **Phase 7: App shell + ClubSwitcher** (URL state `?club&from&to`)
+- [ ] 👉 **Phase 7: App shell + ClubSwitcher** (URL state `?club&from&to`)
 - [ ] **Phase 8: DateRangePicker + presets** (Last 4w / 12w / All / Custom, hiển thị cả range của kỳ trước)
 - [ ] **Phase 9: MetricCards** (định nghĩa luôn hiện, delta tô màu theo ngữ nghĩa, coverage của no-shows). **Phase cần review UI kỹ nhất.**
 - [ ] **Phase 10: WeeklyChart** (active players, so sánh với kỳ trước, đánh dấu tuần partial, tooltip theo giờ HCM)
@@ -68,3 +68,4 @@
 | 2026-11-16 | 3 | Logic seed nằm trong `lib/seed.ts` (để test dùng lại), CLI `scripts/seed.ts`, `ensure-seed.mjs` chạy ở predev/prebuild. DB API mở readonly. Seed log ghi chú chất lượng data (36 booking trước joined_club_at). |
 | 2026-11-16 | 4 | `lib/metrics.ts` là reference implementation; `lib/definitions.ts` là text định nghĩa. Thêm case: điểm danh thiếu dấu, mark lạc ở session không ghi, session đúng `now`. |
 | 2026-11-16 | 5 | WHERE dùng chung (HELD/CONFIRMED/MARKED/NO_SHOW). Weekly GROUP BY `week_start_local`, tuần so sánh = lùi đúng độ dài kỳ. Số kiểm tra: mặc định 180 players / 60 sessions / 40 no-shows (33/60 có điểm danh); tuần Tết 16/02 no-shows = null. |
+| 2026-11-16 | 6 | `from`/`to` không bắt buộc (mặc định 12 tuần), tối đa 731 ngày. `/api/clubs` trả thêm `now`. Sửa lỗi: zod 4 vẫn chạy object refine khi field lỗi → guard bằng `bothValid`. |
