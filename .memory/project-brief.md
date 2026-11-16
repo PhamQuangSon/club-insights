@@ -42,17 +42,19 @@
 
 ## 3. Định nghĩa metric (đã chốt)
 
+Nguồn sự thật cho text: `lib/definitions.ts`. Nguồn sự thật cho logic: `lib/metrics.ts` (SQL phải khớp). "Held" = `status='scheduled'` AND trong range AND `starts_at <= now`.
+
 Range `[from, to]` là ngày theo giờ club, tính cả hai đầu. Đổi sang UTC thành `[startUtc, endUtcExclusive)`. Mọi metric chỉ xét session thuộc club đó có `starts_at` nằm trong range.
 
 | Metric | Text hiển thị trên UI (EN) | Công thức |
 |---|---|---|
-| **Active players** | "Different players with at least one confirmed booking at a session that went ahead in this period." | `COUNT(DISTINCT b.player_id)` WHERE `b.status='booked'` AND `s.status='scheduled'` AND `s.starts_at <= now` |
-| **Sessions held** | "Sessions that took place in this period. Cancelled sessions are not counted." | `COUNT(*)` WHERE `s.status='scheduled'` AND `s.starts_at <= now` |
-| **No-shows** | "Confirmed bookings marked absent, at sessions where attendance was taken. Based on X of Y sessions." | `COUNT(*)` WHERE `b.status='booked'` AND `b.attended='false'` AND `s.attendance_recorded=1` AND `s.status='scheduled'` |
+| **Active players** | "Different players with at least one confirmed booking at a session that went ahead. Someone who played five times counts once." | `COUNT(DISTINCT b.player_id)` WHERE `b.status='booked'` AND `s.status='scheduled'` AND `s.starts_at <= now` |
+| **Sessions held** | "Sessions that went ahead in this period. Cancelled sessions are not counted." | `COUNT(*)` WHERE `s.status='scheduled'` AND `s.starts_at <= now` |
+| **No-shows** | "Confirmed bookings marked absent, counted only at sessions where attendance was taken. Elsewhere no-shows are unknown, not zero." | `COUNT(*)` WHERE `b.status='booked'` AND `b.attended=0` AND `s.attendance_recorded=1` AND session held. `null` nếu không có session held nào có điểm danh |
 
 **Lý do:**
 - Active players đếm theo **booking**, không theo attendance, vì 91/195 session không ghi điểm danh. Đếm theo attendance sẽ thiếu nghiêm trọng.
-- No-shows luôn đi kèm **coverage** (X/Y session held có ghi điểm danh) và **no-show rate** = no-shows / số booking đã ghi điểm danh. Lý do là số tuyệt đối thay đổi theo coverage. Khi X = 0 thì hiển thị "Unknown" (không hiện 0) kèm badge cảnh báo.
+- No-shows luôn đi kèm **coverage** (X/Y session held có ghi điểm danh) và **no-show rate** = no-shows / số booking confirmed **có dấu điểm danh** (booking thiếu dấu ở session có điểm danh tính là unknown, không vào mẫu số). Lý do là số tuyệt đối thay đổi theo coverage. Khi X = 0 thì hiển thị "Unknown" (không hiện 0) kèm badge cảnh báo.
 - Khi so với kỳ trước, nếu coverage hai kỳ chênh lệch nhiều thì ghi chú để host không đọc nhầm xu hướng.
 - **Kỳ trước** = cùng số ngày, kết thúc ngay trước ngày `from`. UI hiển thị rõ ngày của kỳ trước.
 

@@ -4,7 +4,7 @@
 
 ## Trạng thái hiện tại
 
-- **Phase hiện tại:** 👉 Phase 4 (pure metrics + test)
+- **Phase hiện tại:** 👉 Phase 5 (SQL query layer)
 - **Cập nhật lần cuối:** 2026-11-16
 - **Đã có:** đề PDF, `data-csv/` (4 CSV), các file phân tích cũ (`phan-tich.md`, `ke-hoach-phase.md`, có chỗ đã lỗi thời so với data thật), `.claude/CLAUDE.md`, `.memory/`.
 - **Blockers:** chưa có.
@@ -37,11 +37,11 @@
     - `SELECT COUNT(*) FROM sessions WHERE attendance_recorded=1` = **104**
     - Mọi `week_start_local` đều là Thứ Hai. Có đúng 39 tuần có session scheduled.
 
-- [ ] 👉 **Phase 4: `lib/metrics.ts` (hàm thuần) + test**: đây là test chính "con số dễ sai nhất"
+- [x] **Phase 4: `lib/metrics.ts` (hàm thuần) + test**: đây là test chính "con số dễ sai nhất"
   - Fixture: A (đã ghi điểm danh, T/F/F → 2 no-show), B (`attendance_recorded=false`, attended null → không tính, không phải 0), C (có 1 booking cancelled → không phải no-show), D (session cancelled → bị loại hoàn toàn), E (session Early Bird CN 22:30 UTC → thuộc tuần sau).
-  - **DoD:** test pass, có case "coverage = 0 → noShows null".
+  - **DoD:** test pass, có case "coverage = 0 → noShows null". ✅ (2026-11-16, 12 test metric, tổng 31)
 
-- [ ] **Phase 5: `lib/queries.ts` (SQL, WHERE dùng chung) + test integration**
+- [ ] 👉 **Phase 5: `lib/queries.ts` (SQL, WHERE dùng chung) + test integration**
   - `getSummary`, `getWeeklySeries`, `getDrilldown`, `getClubs`.
   - **DoD:** test vitest chạy trên DB đã seed, assert `summary.X.current === drilldown(X).total` cho cả 3 metric với range mặc định và range all-data. Đối chiếu số với kết quả tính bằng Python/CSV.
 
@@ -66,3 +66,4 @@
 | 2026-11-16 | 1 | Scaffold: Next 15.5, TS 5.9, Tailwind 3.4 + token, Radix, vitest. Hạ TS 7 → 5 vì Next chưa hỗ trợ. |
 | 2026-11-16 | 2 | `lib/time.ts` (week bucketing, bounds, previous range, presets, weeksInRange) + `lib/types.ts` (API contract). Chốt format UTC không mili-giây để so sánh chuỗi an toàn. |
 | 2026-11-16 | 3 | Logic seed nằm trong `lib/seed.ts` (để test dùng lại), CLI `scripts/seed.ts`, `ensure-seed.mjs` chạy ở predev/prebuild. DB API mở readonly. Seed log ghi chú chất lượng data (36 booking trước joined_club_at). |
+| 2026-11-16 | 4 | `lib/metrics.ts` là reference implementation; `lib/definitions.ts` là text định nghĩa. Thêm case: điểm danh thiếu dấu, mark lạc ở session không ghi, session đúng `now`. |
