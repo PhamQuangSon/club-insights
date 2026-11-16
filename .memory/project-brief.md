@@ -100,4 +100,5 @@ bookings.csv booking_id,session_id,player_id,booked_at,status,cancelled_at,atten
 | D7 | Tính `week_start_local` sẵn lúc seed. SQL không phải xử lý timezone | Dễ test, không sai |
 | D8 | Summary và drill-down dùng chung một hàm WHERE | Số trên card luôn khớp số dòng trong drill-down |
 | D9 | "Held" có thêm điều kiện `starts_at <= now` | Chặn trường hợp host chọn range nằm trong tương lai |
+| D11 | Chart tuần: tuần so sánh = cùng tuần lùi lại đúng độ dài kỳ (range theo tuần → đúng tuần Mon–Sun tương ứng). Tuần không có session có điểm danh → no-shows null | Không so sánh lệch tuần |
 | D10 | Club không có data → empty state riêng, nêu ngày tạo club và mô tả những gì sẽ hiện khi có session | Đề yêu cầu "useful page" |
