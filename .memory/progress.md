@@ -4,7 +4,7 @@
 
 ## Trạng thái hiện tại
 
-- **Phase hiện tại:** 👉 Phase 2 (time utilities)
+- **Phase hiện tại:** 👉 Phase 3 (DB schema + seed)
 - **Cập nhật lần cuối:** 2026-11-16
 - **Đã có:** đề PDF, `data-csv/` (4 CSV), các file phân tích cũ (`phan-tich.md`, `ke-hoach-phase.md`, có chỗ đã lỗi thời so với data thật), `.claude/CLAUDE.md`, `.memory/`.
 - **Blockers:** chưa có.
@@ -21,16 +21,16 @@
   - Inter qua `next/font`, token trong `globals.css` theo `design-system.md` §2, màu `brand-*` trong Tailwind config.
   - **DoD:** `npm install && npm run dev` mở được trang. `npm test` chạy được. `npx tsc --noEmit` sạch. ✅ (dev → HTTP 200, 1 smoke test pass, tsc sạch)
 
-- [ ] 👉 **Phase 2: `lib/time.ts` + `lib/types.ts` + test (TDD)**
+- [x] **Phase 2: `lib/time.ts` + `lib/types.ts` + test (TDD)** (2026-11-16, 15 test pass)
   - `NOW_ISO`, `getWeekStart(utcIso, tz)`, `toLocalDate`, `rangeToUtcBounds(from, to, tz)`, `previousRange(from, to)`, `defaultRange(nowIso, tz)`, `presetRange(...)`.
   - **DoD (test bắt buộc):**
     - `getWeekStart('2026-01-04T22:30:00Z', HCM) === '2026-01-05'` (session Early Bird thật, s0001)
     - `getWeekStart('2026-01-04T16:59:59Z', HCM) === '2025-12-29'`, `getWeekStart('2026-01-04T17:00:00Z', HCM) === '2026-01-05'`
-    - `rangeToUtcBounds('2026-01-05','2026-01-11', HCM)` → `start '2026-01-04T17:00:00.000Z'`, `end '2026-01-11T17:00:00.000Z'`
+    - `rangeToUtcBounds('2026-01-05','2026-01-11', HCM)` → `start '2026-01-04T17:00:00Z'`, `end '2026-01-11T17:00:00Z'` (format canonical, không mili-giây)
     - `previousRange('2026-07-13','2026-10-04')` → `{ from: '2026-04-20', to: '2026-07-12' }`
     - `defaultRange(NOW_ISO, HCM)` → `{ from: '2026-07-13', to: '2026-10-04' }`
 
-- [ ] **Phase 3: DB schema + seed**
+- [ ] 👉 **Phase 3: DB schema + seed**
   - Tính `week_start_local` và `date_local` bằng hàm của Phase 2, theo `time_zone` của từng club. `attended` rỗng → NULL. Idempotent, có `--force`. `ensure-seed.mjs` dùng cho `predev`.
   - **DoD:** log ra 2 clubs / 260 players / 195 sessions / 1893 bookings.
     - `SELECT COUNT(*) FROM bookings WHERE attended IS NULL` = **894** (734 booked + 160 cancelled)
@@ -64,3 +64,4 @@
 | 2026-11-16 | 0 | Chốt design system: Inter, primary `#3336FD`, nền `#F4F8FF`, xanh lá = đang chọn, vàng = badge x/y. |
 | 2026-11-16 | 0 | Repo public → xoá mọi nhắc tới tên công ty, gitignore PDF đề bài. |
 | 2026-11-16 | 1 | Scaffold: Next 15.5, TS 5.9, Tailwind 3.4 + token, Radix, vitest. Hạ TS 7 → 5 vì Next chưa hỗ trợ. |
+| 2026-11-16 | 2 | `lib/time.ts` (week bucketing, bounds, previous range, presets, weeksInRange) + `lib/types.ts` (API contract). Chốt format UTC không mili-giây để so sánh chuỗi an toàn. |

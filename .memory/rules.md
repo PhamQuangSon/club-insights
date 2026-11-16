@@ -2,9 +2,9 @@
 
 ## Correctness: phần dễ mất điểm nhất
 
-1. **Thời gian.** DB lưu UTC dạng ISO string `YYYY-MM-DDTHH:mm:ssZ`, nhờ vậy so sánh chuỗi cũng là so sánh thời gian. Mọi chuyển đổi timezone làm bằng Luxon trong `lib/time.ts`. **Cấm** dùng `strftime`, `date()` của SQLite, `Date#getDay()` hay `toLocaleDateString` để chia tuần.
+1. **Thời gian.** DB lưu UTC dạng ISO string canonical `YYYY-MM-DDTHH:mm:ssZ` (**không có mili-giây**: dùng `toUtcIso`/`normalizeUtcIso` cho mọi thứ, cả mốc range). Nhờ vậy so sánh chuỗi cũng là so sánh thời gian. Mọi chuyển đổi timezone làm bằng Luxon trong `lib/time.ts`. **Cấm** dùng `strftime`, `date()` của SQLite, `Date#getDay()` hay `toLocaleDateString` để chia tuần.
 2. **Timezone lấy từ `clubs.time_zone`**, không hardcode trong logic. Hằng `HCM` chỉ dùng trong test và fixture.
-3. **"Now" là hằng `NOW_ISO = '2026-10-05T02:00:00.000Z'`** đặt trong `lib/time.ts`. Không gọi `new Date()` trong logic nghiệp vụ.
+3. **"Now" là hằng `NOW_ISO = '2026-10-05T02:00:00Z'`** đặt trong `lib/time.ts`. Không gọi `new Date()` trong logic nghiệp vụ.
 4. **Range:** input `from`/`to` là ngày theo giờ club, tính cả hai đầu. Bên trong luôn đổi thành `[startUtc, endUtcExclusive)`.
 5. **Null là null.** `attended` giữ nguyên ba trạng thái: `1` / `0` / `NULL`. Không bao giờ dùng `COALESCE(attended, 0)` hay `!!attended`.
 6. **No-shows chỉ tính ở session có `attendance_recorded = 1`.** Nếu coverage = 0 thì API trả `noShows: null` và UI hiện "Unknown", **không hiện 0**.
