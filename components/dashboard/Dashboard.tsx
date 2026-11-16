@@ -4,13 +4,15 @@ import { useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { cn } from "@/lib/utils";
-import type { ClubsResponse, MetricKey, SummaryResponse } from "@/lib/types";
+import { describeZone } from "@/lib/format";
+import type { ClubsResponse, MetricKey, SummaryResponse, WeeklyResponse } from "@/lib/types";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClubHeader } from "./ClubHeader";
 import { ClubSwitcher } from "./ClubSwitcher";
 import { MetricCards, MetricCardsSkeleton } from "./MetricCards";
 import { RangePicker } from "./RangePicker";
+import { WeeklyChart, WeeklyChartSkeleton } from "./WeeklyChart";
 import { useDashboardUrl } from "./use-dashboard-url";
 
 export function Dashboard() {
@@ -22,6 +24,11 @@ export function Dashboard() {
   const query = club && range ? `?from=${range.from}&to=${range.to}` : null;
   const summaryQuery = useSWR<SummaryResponse>(
     club?.hasData && query ? `/api/clubs/${club.id}/summary${query}` : null,
+    fetcher,
+    { keepPreviousData: true },
+  );
+  const weeklyQuery = useSWR<WeeklyResponse>(
+    club?.hasData && query ? `/api/clubs/${club.id}/weekly${query}&metric=activePlayers` : null,
     fetcher,
     { keepPreviousData: true },
   );
@@ -63,6 +70,23 @@ export function Dashboard() {
                 )}
               >
                 <MetricCards summary={summaryQuery.data} onOpen={setOpenMetric} />
+              </div>
+            )}
+            {weeklyQuery.error ? (
+              <ErrorBanner
+                message={`Couldn't load the weekly chart. ${weeklyQuery.error.message}`}
+                onRetry={() => weeklyQuery.mutate()}
+              />
+            ) : !weeklyQuery.data ? (
+              <WeeklyChartSkeleton />
+            ) : (
+              <div
+                className={cn(
+                  "transition-opacity",
+                  (weeklyQuery.data.range.from !== range.from || weeklyQuery.data.range.to !== range.to) && "opacity-50",
+                )}
+              >
+                <WeeklyChart weekly={weeklyQuery.data} zoneCity={describeZone(club.timeZone, now).city} />
               </div>
             )}
             {openMetric && <p className="sr-only">Selected {openMetric}</p>}

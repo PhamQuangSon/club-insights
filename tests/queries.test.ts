@@ -105,7 +105,11 @@ describe("weekly series", () => {
   it("has one point per Monday–Sunday week and adds up to the period totals", () => {
     const held = getWeeklySeries(db, club, DEFAULT, "sessionsHeld", NOW_ISO);
     expect(held.weeks).toHaveLength(12);
-    expect(held.weeks[0]).toMatchObject({ weekStart: "2026-07-13", weekEnd: "2026-07-19", previousWeekStart: "2026-04-20" });
+    expect(held.weeks[0]).toMatchObject({
+      weekStart: "2026-07-13",
+      weekEnd: "2026-07-19",
+      previous: { from: "2026-04-20", to: "2026-04-26" },
+    });
     expect(held.weeks.reduce((sum, w) => sum + (w.value ?? 0), 0)).toBe(60);
     expect(held.weeks.reduce((sum, w) => sum + (w.previousValue ?? 0), 0)).toBe(58);
 
@@ -119,6 +123,17 @@ describe("weekly series", () => {
       const card = getSummary(db, club, { from: w.weekStart, to: w.weekEnd }, NOW_ISO);
       expect(w.value, w.weekStart).toBe(card.metrics.activePlayers.current);
     }
+  });
+
+  it("compares partial weeks with the same days one period earlier", () => {
+    const range = { from: "2026-07-15", to: "2026-08-20" }; // Wed → Thu, 37 days
+    const series = getWeeklySeries(db, club, range, "sessionsHeld", NOW_ISO);
+    const summary = getSummary(db, club, range, NOW_ISO);
+    expect(series.weeks[0]).toMatchObject({ partial: true, previous: { from: "2026-06-08", to: "2026-06-12" } });
+    expect(series.weeks.every((w) => w.previousValue !== null)).toBe(true);
+    // Weeks tile the range exactly, so they add up to both period totals.
+    expect(series.weeks.reduce((sum, w) => sum + (w.value ?? 0), 0)).toBe(summary.metrics.sessionsHeld.current);
+    expect(series.weeks.reduce((sum, w) => sum + (w.previousValue ?? 0), 0)).toBe(summary.metrics.sessionsHeld.previous);
   });
 
   it("marks weeks without attendance as unknown for no-shows", () => {

@@ -120,9 +120,10 @@ export interface SummaryResponse {
 export interface WeeklyPoint {
   weekStart: string;
   weekEnd: string;
+  /** Counted over the days of this week that fall inside the range. */
   value: number | null;
-  /** Same-position week in the previous period. */
-  previousWeekStart: string;
+  /** The same days, one period earlier (for whole-week ranges: the matching Monday–Sunday week). */
+  previous: DateRange;
   previousValue: number | null;
   /** True when part of the week is outside the selected range. */
   partial: boolean;

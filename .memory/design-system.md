@@ -69,7 +69,7 @@ Chỉ có light mode (dark mode để vào mục Next steps).
 
   /* Chart */
   --chart-current: 239 98% 60%;      /* #3336FD */
-  --chart-previous: 239 97% 88%;     /* #C2C3FE bản nhạt của blue */
+  --chart-previous: 239 98% 82%;     /* #A5A7FE bản nhạt của blue, 2.2:1 trên nền trắng (dataviz validator) */
   --chart-partial: 43 99% 54%;       /* #FEBC17 đánh dấu tuần chưa đủ ngày */
 }
 ```

@@ -37,7 +37,7 @@
 
     /* Chart */
     --chart-current: 239 98% 60%;
-    --chart-previous: 239 97% 88%;
+    --chart-previous: 239 98% 82%; /* #A5A7FE, 2.2:1 on white */
     --chart-partial: 43 99% 54%;
   }
 
@@ -67,4 +67,13 @@
 }
 .rdp-root.club-calendar .rdp-caption_label {
   font-weight: 700;
+}
+
+/* Legend swatch matching the chart's partial-week stripes. */
+.partial-swatch {
+  background: repeating-linear-gradient(
+    45deg,
+    hsl(var(--chart-current)) 0 2px,
+    hsl(var(--chart-current) / 0.25) 2px 4px
+  );
 }

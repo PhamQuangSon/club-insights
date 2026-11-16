@@ -204,6 +204,10 @@ function weeklyValues(db: Db, metric: MetricKey, p: PeriodParams): Map<string, n
   return values;
 }
 
+function metricValue(m: PeriodMetrics, metric: MetricKey): number | null {
+  return metric === "activePlayers" ? m.activePlayers : metric === "sessionsHeld" ? m.sessionsHeld : m.noShows;
+}
+
 export function getWeeklySeries(
   db: Db,
   club: ClubRow,
@@ -214,19 +218,19 @@ export function getWeeklySeries(
   const prevRange = previousRange(range);
   const shift = rangeLengthDays(range);
   const current = weeklyValues(db, metric, periodParams(club, range, nowIso));
-  const previous = weeklyValues(db, metric, periodParams(club, prevRange, nowIso));
   const empty: number | null = metric === "noShows" ? null : 0;
 
-  // The comparison week sits the same number of days earlier as the period itself,
-  // so for whole-week ranges it is exactly the matching Monday–Sunday week.
   const weeks: WeeklyPoint[] = weeksInRange(range).map((w) => {
-    const previousWeekStart = addDays(w.weekStart, -shift);
+    // Compare like with like: the days of this week inside the range, one period earlier.
+    // For whole-week ranges that is exactly the matching Monday–Sunday week.
+    const days = { from: w.weekStart < range.from ? range.from : w.weekStart, to: w.weekEnd > range.to ? range.to : w.weekEnd };
+    const previous = { from: addDays(days.from, -shift), to: addDays(days.to, -shift) };
     return {
       weekStart: w.weekStart,
       weekEnd: w.weekEnd,
       value: current.has(w.weekStart) ? current.get(w.weekStart)! : empty,
-      previousWeekStart,
-      previousValue: previous.has(previousWeekStart) ? previous.get(previousWeekStart)! : empty,
+      previous,
+      previousValue: metricValue(getPeriodMetrics(db, periodParams(club, previous, nowIso)), metric),
       partial: w.partial,
     };
   });
