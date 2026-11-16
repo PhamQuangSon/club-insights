@@ -141,7 +141,7 @@ Tailwind: `fontFamily.sans = ['var(--font-inter)', 'system-ui', 'sans-serif']` (
   Early Bird Monday                        (đậm)
   [Recorded] 1 no-show              [11/12]  ← badge vàng x/y = booked/places
   ```
-  - Attendance: tag **"Recorded"** nền `selected` chữ đen. Tag **"Not taken"** nền `neutral-tag`. Không dùng màu đỏ, vì không ghi điểm danh không phải là lỗi.
+  - Attendance: tag **"Recorded"** nền `selected` chữ đen. Tag **"Not recorded"** nền `neutral-tag` viền nét đứt. Player: "16 attended · 13 not recorded". Không dùng màu đỏ, vì không ghi điểm danh không phải là lỗi.
 - **Players**: avatar tròn viết tắt + tên + "5 sessions · 4 attended · 1 no-show".
 - **No-shows**: avatar + tên, dòng phụ "Early Bird Monday · Mon, Jul 13 @5:30 AM".
 - Desktop có thể hiển thị dạng bảng (header sticky), mobile hiển thị dạng list card.

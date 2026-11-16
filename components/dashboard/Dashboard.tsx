@@ -10,6 +10,7 @@ import { ErrorBanner } from "@/components/ui/error-banner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClubHeader } from "./ClubHeader";
 import { ClubSwitcher } from "./ClubSwitcher";
+import { DrilldownSheet } from "./DrilldownSheet";
 import { MetricCards, MetricCardsSkeleton } from "./MetricCards";
 import { RangePicker } from "./RangePicker";
 import { WeeklyChart, WeeklyChartSkeleton } from "./WeeklyChart";
@@ -89,7 +90,14 @@ export function Dashboard() {
                 <WeeklyChart weekly={weeklyQuery.data} zoneCity={describeZone(club.timeZone, now).city} />
               </div>
             )}
-            {openMetric && <p className="sr-only">Selected {openMetric}</p>}
+            <DrilldownSheet
+              clubId={club.id}
+              timeZone={club.timeZone}
+              range={range}
+              metric={openMetric}
+              summary={summaryQuery.data}
+              onClose={() => setOpenMetric(null)}
+            />
           </>
         )}
       </main>

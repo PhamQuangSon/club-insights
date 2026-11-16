@@ -102,4 +102,5 @@ bookings.csv booking_id,session_id,player_id,booked_at,status,cancelled_at,atten
 | D9 | "Held" có thêm điều kiện `starts_at <= now` | Chặn trường hợp host chọn range nằm trong tương lai |
 | D11 | Chart tuần: mỗi tuần so với **cùng các ngày đó lùi lại đúng độ dài kỳ** (range trọn tuần → đúng tuần Mon–Sun tương ứng; tuần partial → so cùng số ngày). Tuần partial vẽ sọc. Tuần không có session có điểm danh → no-shows null | Không so sánh lệch ngày, cộng các tuần luôn ra tổng của card |
 | D12 | Card no-shows: hiện rate (no-shows / booking có dấu điểm danh) cạnh số đếm; nếu tỷ lệ session có điểm danh giữa 2 kỳ lệch ≥15 điểm % thì cảnh báo "so sánh rate, đừng so số đếm" | Số đếm tăng có thể chỉ vì điểm danh nhiều hơn |
+| D13 | Drill-down players có sort "Most no-shows" và ô tìm tên | Brief nói host muốn biết ai không đến |
 | D10 | Club không có data → empty state riêng, nêu ngày tạo club và mô tả những gì sẽ hiện khi có session | Đề yêu cầu "useful page" |
