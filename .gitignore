@@ -21,3 +21,6 @@ ke-hoach-phase.md
 .env*
 .DS_Store
 .vercel
+
+# local QA tooling (screenshots)
+.qa/
