@@ -224,6 +224,8 @@ npm run dev          # first run seeds db/club-insights.db from data-csv/, then 
 | `npm run seed -- --force` | Rebuild the database from the CSVs |
 | `npm run build && npm start` | Production build (also seeds if needed) |
 
+Day-to-day developer notes (metric definitions, decisions, deployment details) are in [`.memory/dev-guide.md`](.memory/dev-guide.md).
+
 To browse the database, open `db/club-insights.db` read-only in any SQLite client (DBeaver, DB Browser for SQLite, or `sqlite3 -readonly db/club-insights.db`).
 
 Project layout:

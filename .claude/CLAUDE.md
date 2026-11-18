@@ -28,7 +28,9 @@ Bộ nhớ của dự án nằm trong `.memory/`. Đây là nguồn sự thật,
 6. Trao đổi với user bằng tiếng Việt. Code, comment, text trên UI, README và commit message viết bằng tiếng Anh.
 7. Chỉ commit khi user yêu cầu. Mỗi commit tương ứng một phase, message dạng `phase N: <summary>`.
 
-## Lệnh thường dùng (cập nhật khi đã scaffold)
+## Lệnh thường dùng
+
+Hướng dẫn chạy và maintain đầy đủ cho dev: `.memory/dev-guide.md`. README ở root là bản giới thiệu cho người chấm (HR, tech lead).
 
 ```bash
 npm install && npm run dev   # predev tự seed nếu db chưa có
