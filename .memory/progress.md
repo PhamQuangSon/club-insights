@@ -4,8 +4,8 @@
 
 ## Trạng thái hiện tại
 
-- **Phase hiện tại:** ✅ Xong toàn bộ 13 phase. Còn lại: push lên GitHub (user tự quyết).
-- **Cập nhật lần cuối:** 2026-11-16
+- **Phase hiện tại:** ✅ Xong toàn bộ 13 phase. Đã push GitHub và deploy Vercel: https://club-insights-orcin.vercel.app (tự deploy khi push `main`).
+- **Cập nhật lần cuối:** 2026-11-18
 - **Đã có:** app hoàn chỉnh + README. File local không commit: đề PDF, `phan-tich.md`, `ke-hoach-phase.md`, `.qa/` (công cụ screenshot).
 - **Blockers:** chưa có.
 
@@ -76,3 +76,4 @@
 | 2026-11-16 | 11 | Radix Dialog làm sheet phải (full width mobile). Players: tìm theo tên + sort Most sessions / **Most no-shows** / A–Z (trả lời "ai không đến"). Sessions: giờ theo HCM, tag Recorded / Not recorded, badge booked/places. No-shows unknown → giải thích thay vì danh sách rỗng. Mở theo kiểu controlled nên tự trả focus về card khi đóng. |
 | 2026-11-16 | 12 | Club mới: giải thích 3 metric sẽ có + tip "take attendance at every session" + nút xem club mẫu. Range không có session → EmptyRange + nút về 12 tuần. Favicon SVG tự vẽ, `document.title` theo club. Dashboard tách `ClubInsights`. Badge coverage rút thành "33/60" (nhãn "Sessions with attendance") để không tràn ở 768px. |
 | 2026-11-16 | 13 | README (cách chạy, định nghĩa, 11 quyết định, API, test, data notes, next steps). Bỏ script `lint` (chưa có ESLint). QA trên clone sạch trong `.qa/clean`. |
+| 2026-11-18 | deploy | Vercel: DB seed lúc build, bundle qua `outputFileTracingIncludes`, journal_mode=DELETE để mở read-only trên FS chỉ đọc; `vercel.json` chạy `npm run build`. README viết lại cho HR + tech lead (overview/demo, quy trình, kiến trúc, screenshot trong `docs/screenshots/`, trade-offs). Nghiên cứu UI/UX mô tả chung chung, không nêu tên công ty. |

@@ -11,6 +11,7 @@
 | Data fetching (client) | **SWR** | `keepPreviousData` để không nhấp nháy khi đổi range |
 | UI | **Tailwind CSS 3.4** + component kiểu shadcn tự viết trên **Radix** (`react-dialog` cho sheet, `react-popover`) + `react-day-picker` + `lucide-react`. Theme theo `design-system.md`, font Inter (`next/font/google`) | Không dùng shadcn CLI (cần tương tác). Token HSL map trong `tailwind.config.ts` |
 | Chart | **Recharts 3** | Bar cho kỳ hiện tại, line hoặc ghost bar cho kỳ trước |
+| Hosting | **Vercel** (project `club-insights`, git-connected) | DB seed lúc build, bundle read-only qua `outputFileTracingIncludes`, journal DELETE |
 | Test | **Vitest 4** | Unit test cho hàm thuần, integration test cho query trên DB in-memory |
 
 ## Cấu trúc thư mục dự kiến
