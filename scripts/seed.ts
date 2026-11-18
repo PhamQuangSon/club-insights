@@ -31,4 +31,7 @@ console.log(
   `[seed] loaded ${counts.clubs} clubs, ${counts.players} players, ${counts.sessions} sessions, ${counts.bookings} bookings → ${path.relative(process.cwd(), DB_PATH)}`,
 );
 for (const note of dataQualityReport(db)) console.log(`[seed] note: ${note}`);
+// Leave a single self-contained file (no -wal/-shm) so it can be opened read-only,
+// e.g. on a read-only serverless filesystem.
+db.pragma("journal_mode = DELETE");
 db.close();
